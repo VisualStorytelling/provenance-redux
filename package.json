@@ -1,5 +1,5 @@
 {
-  "name": "provenance-redux",
+  "name": "@visualstorytelling/provenance-redux",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -9,7 +9,7 @@
   "files": [
     "dist"
   ],
-  "author": "Tom Klaver <t.klavern@esciencecenter.nl>",
+  "author": "Team visualstorytelling",
   "repository": {
     "type": "git",
     "url": "https://github.com/VisualStorytelling/provenance-redux.git"
