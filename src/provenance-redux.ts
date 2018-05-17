@@ -1,4 +1,9 @@
-import { ActionFunctionRegistry, ProvenanceGraph, ProvenanceGraphTraverser } from 'provenance-core';
+import {
+  ActionFunctionRegistry,
+  ProvenanceGraph,
+  ProvenanceGraphTraverser,
+  ProvenanceTracker
+} from '@visualstorytelling/provenance-core';
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 export type ReduxState = { [key: string]: any };
@@ -19,7 +24,9 @@ export const createProvenanceMiddleware = (createUndoAction: CreateUndoAction) =
   const traverser = new ProvenanceGraphTraverser(registry, graph);
 
   const middleware: Middleware = (store: MiddlewareAPI) => {
-    registry.register('dispatchAction', (action: AnyAction) => Promise.resolve(store.dispatch({...action, fromProvenance: true })));
+    registry.register('dispatchAction', (action: AnyAction) =>
+      Promise.resolve(store.dispatch({ ...action, fromProvenance: true }))
+    );
     return (next: Dispatch<AnyAction>) => (action: AnyAction) => {
       if (isProvenanceAction(action)) {
         return next(action);
@@ -30,7 +37,12 @@ export const createProvenanceMiddleware = (createUndoAction: CreateUndoAction) =
           doArguments: [action],
           undo: 'dispatchAction',
           undoArguments: [undoAction],
-          metadata: { createdBy: 'provenance-redux', createdOn: (new Date()).toDateString(), tags: [], userIntent: 'default' },
+          metadata: {
+            createdBy: 'provenance-redux',
+            createdOn: new Date().toDateString(),
+            tags: [],
+            userIntent: 'default'
+          }
         });
       }
       return null;

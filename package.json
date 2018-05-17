@@ -72,8 +72,8 @@
     },
     "collectCoverage": true
   },
-  "#dependencies": {
-    "provenance-core": "^0.0.0"
+  "dependencies": {
+    "@visualstorytelling/provenance-core": "^1.0.0"
   },
   "peerDependencies": {
     "redux": "*"
