@@ -17,11 +17,10 @@ export function isProvenanceAction(action: AnyAction): action is ProvenanceActio
 export const createProvenanceMiddleware = (createUndoAction: CreateUndoAction) => {
   const registry = new ActionFunctionRegistry();
   const graph = new ProvenanceGraph({
-    name: 'test',
+    name: 'provenance-redux',
     version: '1.0.0'
   });
   const tracker = new ProvenanceTracker(registry, graph);
-  const traverser = new ProvenanceGraphTraverser(registry, graph);
 
   const middleware: Middleware = (store: MiddlewareAPI) => {
     registry.register('dispatchAction', (action: AnyAction) =>
@@ -32,20 +31,13 @@ export const createProvenanceMiddleware = (createUndoAction: CreateUndoAction) =
         return next(action);
       } else {
         const undoAction = createUndoAction(action, store.getState());
-        tracker.applyAction({
+        return tracker.applyAction({
           do: 'dispatchAction',
           doArguments: [action],
           undo: 'dispatchAction',
-          undoArguments: [undoAction],
-          metadata: {
-            createdBy: 'provenance-redux',
-            createdOn: new Date().toDateString(),
-            tags: [],
-            userIntent: 'default'
-          }
+          undoArguments: [undoAction]
         });
       }
-      return null;
     };
   };
 
@@ -53,14 +45,6 @@ export const createProvenanceMiddleware = (createUndoAction: CreateUndoAction) =
     middleware,
     graph,
     tracker,
-    traverser
+    registry
   };
 };
-
-// const provenanceReducer = (state, action) => action.type === 'SET_STATE' ? action.state : rootReducer(state, action);
-// const createUndoAction = (action, currentState) => {
-//   return ({
-//     type: 'SET_STATE',
-//     state: currentState
-//   })
-// };
