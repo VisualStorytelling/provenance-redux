@@ -1,10 +1,13 @@
 import {
   ActionFunctionRegistry,
   ProvenanceGraph,
-  ProvenanceGraphTraverser,
   ProvenanceTracker
 } from '@visualstorytelling/provenance-core';
-import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import { AnyAction, Dispatch, MiddlewareAPI } from 'redux';
+
+export interface Middleware {
+  (api: any): (next: any) => (action: any) => any;
+}
 
 export type CreateUndoAction = (action: AnyAction, state: any) => AnyAction;
 export type ProvenanceAction = AnyAction & { fromProvenance: true };

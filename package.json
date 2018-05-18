@@ -1,6 +1,6 @@
 {
   "name": "@visualstorytelling/provenance-redux",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "",
   "keywords": [],
   "main": "dist/provenance-redux.umd.js",
@@ -76,7 +76,7 @@
     "@visualstorytelling/provenance-core": "^1.1.1"
   },
   "peerDependencies": {
-    "redux": "*"
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "@types/jest": "^22.0.0",
