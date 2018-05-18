@@ -4,11 +4,12 @@ import {
   ProvenanceGraph,
   ProvenanceGraphTraverser,
   ProvenanceTracker,
-  api,
-  ActionFunctionRegistry
+  ActionFunctionRegistry,
+  ProvenanceNode,
+  StateNode
 } from '@visualstorytelling/provenance-core';
 
-function isStateNode(node: api.Node): node is api.StateNode {
+function isStateNode(node: ProvenanceNode): node is StateNode {
   return 'action' in node;
 }
 const createUndoAction: CreateUndoAction = (action, currentState) => ({
@@ -42,7 +43,7 @@ describe('with redux', () => {
   let graph: ProvenanceGraph;
   let traverser: ProvenanceGraphTraverser;
   let registry: ActionFunctionRegistry;
-  let rootNode: api.Node;
+  let rootNode: ProvenanceNode;
   let store: Store<any>;
 
   beforeEach(() => {
@@ -80,10 +81,10 @@ describe('with redux', () => {
 
   describe('single dispatch and undo', () => {
     const add5Action = createAddAction(5);
-    let intermediateNode: api.StateNode;
+    let intermediateNode: StateNode;
     beforeEach(async () => {
       await store.dispatch(add5Action);
-      intermediateNode = graph.current as api.StateNode;
+      intermediateNode = graph.current as StateNode;
       await traverser.toStateNode(rootNode.id);
     });
     test('undo resets state', () => {

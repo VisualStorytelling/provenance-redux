@@ -1,16 +1,58 @@
-# Provenance redux
-
-Javascript library to create and manipulate a provenance graph.
-The provenance graph can be usesd as a non-linear undo graph.
+# Provenance Redux
 
 [![Build Status](https://travis-ci.org/VisualStorytelling/provenance-redux.svg?branch=master)](https://travis-ci.org/VisualStorytelling/provenance-redux)
 [![Coverage Status](https://coveralls.io/repos/github/VisualStorytelling/provenance-redux/badge.svg?branch=master)](https://coveralls.io/github/VisualStorytelling/provenance-redux?branch=master)
+
+Provenance Redux integrates redux and the [VisualStoryTelling/provenance-core](https://github.com/visualstorytelling/provenance-core) library.
+It allows to easily add complex multi-branched undo/redo functionality to redux.
 
 ## Install
 
 ```
 npm install provenance-redux
 ```
+
+## Usage
+
+### Undo actions
+To allow the `provenance` library to undo your actions, it needs to know how to
+invert the actions that are dispatched to the redux store. The user has
+to provide a function that can construct this inverse action from the
+original action and the current state.
+
+E.g. an easy implementation would be the following:
+```javascript
+  const createUndoAction = (action, currentState) => ({
+    type: 'SET_STATE',
+    state: currentState
+  });
+```
+Ofcourse this action needs to be recognized by your reducer. You can patch your existing 
+root `reducer` by e.g.
+```javascript
+  const provenanceReducer: Reducer = (state, action) =>
+        action.type === 'SET_STATE' ? action.state : reducer(state, action);
+```
+Is this a good idea? Depending on the size of your state and the number of steps this could
+quickly use a lot of memory (since the state is stored at each step). So you might want to provide
+more fine-tuned undo actions.
+
+### Middleware
+You can now construct the middleware, you have to provide your createUndoAction:
+```javascript
+  const {middleware, tracker, graph, registry} = createProvenanceMiddleware(createUndoAction);
+```
+You should then register the middleware when you create the Redux store
+```javascript
+  const store = createStore(provenanceReducer, 0 as any, applyMiddleware(middleware));
+```
+If you are using other Redux middlewares, note that **the order matters**. You probably want
+the provenance-redux middleware first. (This is because the middleware consumes an action, and
+dispatches it again with a property `fromProvenance` added to the action. So other middlewares
+will get the action twice if they are applied before the `provenance-redux` middleware.
+
+Afterwards you can use the provenance traversing etc. according to the documentation at
+[provenance-core](https://github.com/VisualStorytelling/provenance-core).
 
 ### Develop
 

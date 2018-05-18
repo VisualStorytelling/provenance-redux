@@ -6,8 +6,7 @@ import {
 } from '@visualstorytelling/provenance-core';
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
-export type ReduxState = { [key: string]: any };
-export type CreateUndoAction = (action: AnyAction, state: ReduxState) => AnyAction;
+export type CreateUndoAction = (action: AnyAction, state: any) => AnyAction;
 export type ProvenanceAction = AnyAction & { fromProvenance: true };
 
 export function isProvenanceAction(action: AnyAction): action is ProvenanceAction {
