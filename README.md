@@ -30,7 +30,7 @@ E.g. an easy implementation would be the following:
 Ofcourse this action needs to be recognized by your reducer. You can patch your existing 
 root `reducer` by e.g.
 ```javascript
-  const provenanceReducer: Reducer = (state, action) =>
+  const provenanceReducer = (state, action) =>
         action.type === 'SET_STATE' ? action.state : reducer(state, action);
 ```
 Is this a good idea? Depending on the size of your state and the number of steps this could
@@ -44,7 +44,7 @@ You can now construct the middleware, you have to provide your createUndoAction:
 ```
 You should then register the middleware when you create the Redux store
 ```javascript
-  const store = createStore(provenanceReducer, 0 as any, applyMiddleware(middleware));
+  const store = createStore(provenanceReducer, INITIAL_STATE, applyMiddleware(middleware));
 ```
 If you are using other Redux middlewares, note that **the order matters**. You probably want
 the provenance-redux middleware first. (This is because the middleware consumes an action, and
